@@ -6751,9 +6751,9 @@ fi
         CXX=$savedCXX
 
         if test "x$MPICXX" != "x"; then :
-   if test "x$with_opencl" != xyes -o "x$with_cuda" != xyes -o "x$with_hip" != xyes; then :
+   if test "x$with_opencl" != xyes -o "x$with_cuda" != xyes; then :
    #with_mpi=yes
-   #USE_MPI=yes
+                    #USE_MPI=yes
 
 else
    { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
