@@ -487,8 +487,8 @@ AS_IF([test "x$with_mpi" != xno],
 
         AS_IF([test "x$MPICXX" != "x"],
             [ AS_IF([test "x$with_opencl" != xyes -o "x$with_cuda" != xyes],
-                  [ with_mpi=yes
-                    USE_MPI=yes
+                  #[ with_mpi=yes
+                    #USE_MPI=yes
                   ],
                   [ AC_MSG_FAILURE([MPI support was requested, but is only meaningful if OpenCL and/or CUDA support is available])
                     with_mpi=no
