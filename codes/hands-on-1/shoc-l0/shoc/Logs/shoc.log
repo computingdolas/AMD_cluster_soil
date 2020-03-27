@@ -1,0 +1,22 @@
+--- Welcome To The SHOC Benchmark Suite version 1.1.5 --- 
+Hostname: kleurplaat 
+Platform selection not specified, default to platform #0
+Number of available platforms: 1 
+Number of available devices on platform 0 : 8
+Device 0: 'Vega 20'
+Device 1: 'Vega 20'
+Device 2: 'Vega 20'
+Device 3: 'Vega 20'
+Device 4: 'Vega 20'
+Device 5: 'Vega 20'
+Device 6: 'Vega 20'
+Device 7: 'Vega 20'
+Device selection not specified: defaulting to device #0.
+Using size class: 1
+
+--- Starting Benchmarks ---
+Running benchmark BusSpeedDownload
+    result for bspeed_download:                 26.5508 GB/sec
+Running benchmark BusSpeedReadback
+    result for bspeed_readback:                 27.6296 GB/sec
+Running benchmark MaxFlops

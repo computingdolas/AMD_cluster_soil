@@ -1,0 +1,106 @@
+Number of devices = 8
+Device 0:
+  name               = 'Vega 20'
+  totalGlobalMem     = 32G
+  sharedMemPerBlock  = 64k
+  regsPerBlock       = 0
+  warpSize           = 64
+  maxThreadsPerBlock = 1024
+  maxThreadsDim[3]   = 1024,1024,1024
+  maxGridSize[3]     = 2147483647,2147483647,2147483647
+  totalConstMem      = 16k
+  major (hw version) = 3
+  minor (hw version) = 0
+  clockRate          = 1725000
+Device 1:
+  name               = 'Vega 20'
+  totalGlobalMem     = 32G
+  sharedMemPerBlock  = 64k
+  regsPerBlock       = 0
+  warpSize           = 64
+  maxThreadsPerBlock = 1024
+  maxThreadsDim[3]   = 1024,1024,1024
+  maxGridSize[3]     = 2147483647,2147483647,2147483647
+  totalConstMem      = 16k
+  major (hw version) = 3
+  minor (hw version) = 0
+  clockRate          = 1725000
+Device 2:
+  name               = 'Vega 20'
+  totalGlobalMem     = 32G
+  sharedMemPerBlock  = 64k
+  regsPerBlock       = 0
+  warpSize           = 64
+  maxThreadsPerBlock = 1024
+  maxThreadsDim[3]   = 1024,1024,1024
+  maxGridSize[3]     = 2147483647,2147483647,2147483647
+  totalConstMem      = 16k
+  major (hw version) = 3
+  minor (hw version) = 0
+  clockRate          = 1725000
+Device 3:
+  name               = 'Vega 20'
+  totalGlobalMem     = 32G
+  sharedMemPerBlock  = 64k
+  regsPerBlock       = 0
+  warpSize           = 64
+  maxThreadsPerBlock = 1024
+  maxThreadsDim[3]   = 1024,1024,1024
+  maxGridSize[3]     = 2147483647,2147483647,2147483647
+  totalConstMem      = 16k
+  major (hw version) = 3
+  minor (hw version) = 0
+  clockRate          = 1725000
+Device 4:
+  name               = 'Vega 20'
+  totalGlobalMem     = 32G
+  sharedMemPerBlock  = 64k
+  regsPerBlock       = 0
+  warpSize           = 64
+  maxThreadsPerBlock = 1024
+  maxThreadsDim[3]   = 1024,1024,1024
+  maxGridSize[3]     = 2147483647,2147483647,2147483647
+  totalConstMem      = 16k
+  major (hw version) = 3
+  minor (hw version) = 0
+  clockRate          = 1725000
+Device 5:
+  name               = 'Vega 20'
+  totalGlobalMem     = 32G
+  sharedMemPerBlock  = 64k
+  regsPerBlock       = 0
+  warpSize           = 64
+  maxThreadsPerBlock = 1024
+  maxThreadsDim[3]   = 1024,1024,1024
+  maxGridSize[3]     = 2147483647,2147483647,2147483647
+  totalConstMem      = 16k
+  major (hw version) = 3
+  minor (hw version) = 0
+  clockRate          = 1725000
+Device 6:
+  name               = 'Vega 20'
+  totalGlobalMem     = 32G
+  sharedMemPerBlock  = 64k
+  regsPerBlock       = 0
+  warpSize           = 64
+  maxThreadsPerBlock = 1024
+  maxThreadsDim[3]   = 1024,1024,1024
+  maxGridSize[3]     = 2147483647,2147483647,2147483647
+  totalConstMem      = 16k
+  major (hw version) = 3
+  minor (hw version) = 0
+  clockRate          = 1725000
+Device 7:
+  name               = 'Vega 20'
+  totalGlobalMem     = 32G
+  sharedMemPerBlock  = 64k
+  regsPerBlock       = 0
+  warpSize           = 64
+  maxThreadsPerBlock = 1024
+  maxThreadsDim[3]   = 1024,1024,1024
+  maxGridSize[3]     = 2147483647,2147483647,2147483647
+  totalConstMem      = 16k
+  major (hw version) = 3
+  minor (hw version) = 0
+  clockRate          = 1725000
+Chose device: name='Vega 20' index=0

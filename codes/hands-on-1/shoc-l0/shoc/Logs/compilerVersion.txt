@@ -1,0 +1,6 @@
+g++ (GCC) 9.2.0
+Copyright © 2019 Free Software Foundation, Inc.
+Dit is vrije software; zie de broncode voor kopieercondities.  Er is GEEN
+garantie; zelfs niet voor VERKOOPBAARHEID of GESCHIKTHEID voor een bepaald
+doel.
+

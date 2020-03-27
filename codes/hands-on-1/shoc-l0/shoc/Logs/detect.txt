@@ -1,0 +1,2 @@
+Running this command to detect devices:
+./bin//Serial/HIP/BusSpeedDownload -i > Logs/deviceInfo.txt 2> Logs/deviceInfo.err
