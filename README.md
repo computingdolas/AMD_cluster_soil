@@ -1,11 +1,11 @@
  
 SURF likes to be close to our members and keeps abreast of new technologies that they use for research. 
 
-## Workshop for Inroducing AMD GPU Architectures
+## Workshop for Introducing AMD GPU Architectures
 
 We are currently collaborating with **University of Amsterdam**, **AMD** and **NIKHEF** to organise a workshop session (online and in-person) for AMD GPUs. This workshop aims to cultivate the interest in the new AMD GPU architecture and it's use. 
 
-In this workshop session people will get an overview of the new AMD GPU architecture. We will discuss its performance, usability and programmability and with the assisted demos and hands-on exercises we provide you with the knowledge and tools to start working with your own code on AMD GPUs
+In this workshop and webinar sessions people will get an overview of the new AMD GPU architecture. We will discuss its performance, usability and programmability and with the assisted demos and hands-on exercises we provide you with the knowledge and tools to start working with your own code on AMD GPUs
 
 ### For Whom 
 This workshop is mainly targeted at application developers, HPC support scientists and programmers wanting to get a glimpse of new AMD GPU architectures and its relevance for scientific computing.
