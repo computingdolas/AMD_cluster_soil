@@ -1,0 +1,234 @@
+\documentclass[aspectratio=169]{beamer}
+
+\title{GPU Porting to AMD with HIP}
+\author{}
+\date{}
+\usepackage{gnuplottex}
+\usepackage{minted}
+
+\usepackage[binary-units]{siunitx}
+\usepackage{hyperref}
+\newcommand{\gbs}{\si[per-symbol = \text{~div~}]{\gibi\byte\per\second}}
+\newcommand{\hip}{\textbf{\color{red}{hip}}}
+
+\begin{document}
+\newcommand{\rom}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+% \begin{frame}{Content}
+%     \tableofcontents
+% \end{frame}{}
+
+
+\section{Programming models}
+
+
+\section{HIP}
+
+\begin{frame}{What is HIP}
+    \begin{itemize}
+        \item Open source C++ runtime API and kernel language
+        \item Part of AMD ROCm
+        \item Similar programming model to CUDA.
+        \item Platform independent (targets NVIDIA and AMD cards)
+        \item Feature compariable with CUDA // (in spirit).
+    \end{itemize}
+\end{frame}
+
+
+
+\section{Programming HIP}
+
+\begin{frame}{How to write HIP code}
+
+\begin{itemize}
+    \item Directly write HIP.
+    \item Port CUDA code to HIP.
+\end{itemize}
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{l|l|l}
+Term & HIP & CUDA\\\hline
+Event & cudaEvent\_t & hipEvent\_t\\
+\textbf{Thread-index} & \textbf{threadIdx.x} & \textbf{hipThreadIdx\_x}\\
+Device kernel & \_\_global\_\_ & \_\_global\_\_\\
+Group Memory &  \_\_shared\_\_ & \_\_shared\_\_\\
+Constant & \_\_constant\_\_ & \_\_constant\_\_\\
+\end{tabular}
+    \caption{Term translation table}
+    \label{tab:term_translate}
+\end{table}
+
+\end{frame}
+
+\subsection{Porting code}
+\begin{frame}[fragile]{HIP code example: vector add}
+% \begin{minted}[
+% frame=lines,
+% framesep=3mm
+% ]{c}
+% __global__
+% void vectorAddKernel(float* deviceA, float* deviceB, float* deviceC){
+%     unsigned index = blockIdx.x * blockDim.x + threadIdx.x;
+%     deviceC[index] = deviceA[index] + deviceB[index];
+% }
+% \end{minted}
+\begin{minted}[
+frame=lines,
+framesep=3mm,
+escapeinside=||
+]{c}
+__global__
+void vectorAddKernel(float* deviceA, float* deviceB, float* deviceC){
+    // unsigned index = blockIdx.x * blockDim.x + threadIdx.x;
+    unsigned index = |\hip|BlockIdx_x * |\hip|BlockDim_x + |\hip|ThreadIdx_x;
+    deviceC[index] = deviceA[index] + deviceB[index];
+}
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{HIP code example: memory copy}
+
+% \begin{minted}[
+% frame=lines,
+% framesep=3mm,
+% escapeinside=||
+% ]{c}
+% cudaMalloc((void **) &deviceA, n*sizeof(float));
+% cudaMemcpy(deviceA, hostA, n*sizeof(float), cudaMemcpyHostToDevice);
+% \end{minted}
+
+\begin{minted}[
+frame=lines,
+framesep=3mm,
+escapeinside=||
+]{c}
+// cudaMalloc((void **) &deviceA, n*sizeof(float));
+// cudaMemcpy(deviceA, hostA, n*sizeof(float), cudaMemcpyHostToDevice);
+|\hip|Malloc((void **) &deviceA, n*sizeof(float));
+|\hip|Memcpy(deviceA, hostA, n*sizeof(float), |\hip|MemcpyHostToDevice);
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{HIP code example: kernel launch}
+% \begin{minted}[
+% frame=lines,
+% framesep=3mm
+% ]{c}
+% vectorAddKernel<<<n/threadBlockSize, threadBlockSize>>>
+%                   (deviceA, deviceB, deviceC);
+% \end{minted}
+
+\begin{minted}[
+frame=lines,
+framesep=3mm,
+escapeinside=||
+]{c}
+
+// vectorAddKernel<<<n/threadBlockSize, threadBlockSize>>>
+//                   (deviceA, deviceB, deviceC);
+|{\textbf{\color{red}hipLaunchKernelGGL}}|((vectorAddKernel), 
+                   |{\color{red}dim3}|(n/threadBlockSize), |{\color{red}dim3}|(threadBlockSize),
+                   0 /*Shared*/, 0/*stream*/,
+                   deviceA, deviceB, deviceC);
+\end{minted}
+\end{frame}
+
+\begin{frame}{Hipify}
+
+\begin{itemize}
+%    \item Auto-translates a project from CUDA to HIP.
+    \item Translates a project from CUDA to HIP.
+%    \item It has a Perl version and a Clang version.
+    \item Auto-translates most of the calls and kernels.
+    \item Reports what it could not change.
+    \item Support for most well known CUDA libraries
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Libraries}
+\begin{table}[]
+    \centering
+    \begin{tabular}{l|l|l}
+CUDA & HIP & \\
+\hline
+cuBLAS &	rocBLAS &	Basic Linear Algebra Subroutines\\
+cuFFT &	rocFFT &	Fast Fourier Transfer Library\\
+cuSPARSE &	rocSPARSE &	Sparse BLAS + SPMV\\
+cuSolver &	rocSolver &	Lapack library\\
+AMG-X &	rocALUTION & 	Sparse iterative solvers and preconditioners\\
+Thrust& 	hipThrust &	C++ parallel algorithms library\\
+CUB &	rocPRIM &	Low Level Optimized Parallel Primitives\\
+cuDNN 	&MIOpen &	Deep learning Solver Library\\
+cuRAND &	rocRAND &	Random Number Generator Library\\
+EIGEN &	EIGEN (Ported) &	C++ template library for linear algebra\\
+NCCL &	RCCL &	Communications Primitives Library based on the MPI  \\
+\end{tabular}
+    \caption{Cuda compatible libraries}
+    \label{tab:my_label}
+\end{table}
+\end{frame}
+
+
+\begin{frame}{Hipify tools}
+\begin{itemize}
+    \item \textbf{hipexamine}:
+        Scans source directory and reports which files contain CUDA code and how much of the code can automatically be ported.
+    \item \textbf{hipify}:
+        ``\textit(Hipifies)'' a single file.
+    \item \textbf{hipconvertinplace}:
+%        Inplace porting of CUDA to HIP of a full directory.
+         Ports in-place a full directory from CUDA to HIP.
+    \item \textbf{hipify-cmakefile}:
+          Translates cmake files to use HIP.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Porthing methods}
+\begin{itemize}
+    \item Hipify-perl 
+    \item Hipify-clang
+    \item Custom defines to map cuda calls to hip
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Hipify-perl}
+\begin{itemize}
+    \item Convert provided files to HIP
+    \item Intelegent search replace
+    \item Does not work all the time
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Hipify-clang}
+\begin{itemize}
+    \item Clang based source parsing
+    \item Can replace the compiler to convert a large complex problem
+    \item Works better om complex (c++) inputs
+\end{itemize}
+\end{frame}
+
+\begin{frame}{using Defines}
+\begin{itemize}
+    \item Minimal changes needed, only ifdefs for the kernel launches 
+    \item No need for a fork of the repo while porting continues.
+    \item Works better om complex (c++) inputs
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Pitfalls}
+\begin{itemize}
+    \item \texttt{hipcc} is a lot stricter compared to nvcc
+    \item All functions that are called from the device need to be markt as such
+    \item Low level optimizations for cuda cards need to be redone
+    \item Some specific c++ and up can give incorrect resulsts or are not supported
+    
+\end{itemize}
+\end{frame}
+
+\end{document}
