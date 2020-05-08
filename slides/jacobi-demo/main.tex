@@ -28,7 +28,7 @@
 \usepackage{hyperref}
 \newcommand{\gbs}{\si[per-symbol = \text{~div~}]{\gibi\byte\per\second}}
 
-\title[Your Short Title]{HIP demo: \\ Multi-GPU Jacobi solver}
+\title[]{HIP demo: \\ Multi-GPU Jacobi solver}
 %\author{You}
 % \institute{Where You're From}
 %\date{Date of Presentation}
@@ -43,7 +43,7 @@
 \begin{itemize}
     \item Solve Poison equation.
     \item Fixed boundary condition.
-    \item Average of direct neighbours.
+    \item Average of direct neighbors.
 \end{itemize}
 \begin{figure}[hb!]
     \centering
@@ -54,10 +54,10 @@
 \end{frame}
 
 % \begin{frame}[fragile]{Code, explanation}
-\begin{frame}{Code, explanation}
+\begin{frame}{The code}
 \begin{itemize}
-    \item Cuda code writen by Nvidia.\footnote{\url{https://devblogs.nvidia.com/benchmarking-cuda-aware-mpi/}}
-    \item 2d domain decomposition
+    \item Cuda code written by Nvidia.\footnote{\url{https://devblogs.nvidia.com/benchmarking-cuda-aware-mpi/}}
+    \item 2d domain decomposition.
     \item MPI for communication between GPU's.
     \item Halo rows exchanged after each iteration.
 \end{itemize}
@@ -86,12 +86,12 @@
 \begin{table}[]
 \begin{tabular}{@{}lcc@{}}
 \toprule
-\multicolumn{1}{c}{}  & \# GPU's & GFLOPS / GPU         \\ \midrule
-TitanX                & 1        &     66.47            \\
-MI50                  & 1        &     42.70            \\
-MI50 same island      & 2        &     39.70            \\
-MI50 different island & 2        &     27.60            \\
-MI50 same island      & 4        &     38.44            \\ \bottomrule
+\multicolumn{1}{c}{}  & \# GPU's & GFLOPS / GPU \\ \midrule
+TitanX                & 1        &     66.47    \\
+MI50                  & 1        &     42.70    \\
+MI50 same island      & 2        &     39.70    \\
+MI50 different island & 2        &     27.60    \\
+MI50 same island      & 4        &     38.44    \\ \bottomrule
 \end{tabular}
 \end{table}
 \end{frame}
