@@ -5,11 +5,14 @@
 \date{}
 \usepackage{gnuplottex}
 \usepackage{minted}
+\usepackage[normalem]{ulem}
 
 \usepackage[binary-units]{siunitx}
 \usepackage{hyperref}
 \newcommand{\gbs}{\si[per-symbol = \text{~div~}]{\gibi\byte\per\second}}
 \newcommand{\hip}{\textbf{\color{red}{hip}}}
+\newcommand{\hipblas}{\sout{\color{red}{cu}}\textbf{\color{green}{hip}}}
+\newcommand{\HIPBLAS}{\sout{\color{red}{CU}}\textbf{\color{green}{HIP}}}
 
 \begin{document}
 \newcommand{\rom}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
@@ -199,8 +202,8 @@ NCCL &	RCCL &	Communications Primitives Library based on the MPI  \\
 \begin{frame}{Hipify-perl}
 \begin{itemize}
     \item Convert provided files to HIP
-    \item Intelegent search replace
-    \item Does not work all the time
+    \item Inteligent search replace
+    \item Does not work all the time for more complex codes
 \end{itemize}
 
 \end{frame}
@@ -217,7 +220,7 @@ NCCL &	RCCL &	Communications Primitives Library based on the MPI  \\
 \begin{itemize}
     \item Minimal changes needed, only ifdefs for the kernel launches 
     \item No need for a fork of the repo while porting continues.
-    \item Works better om complex (c++) inputs
+    \item Easier to intergrate in large projects
 \end{itemize}
 \end{frame}
 
@@ -231,4 +234,53 @@ NCCL &	RCCL &	Communications Primitives Library based on the MPI  \\
 \end{itemize}
 \end{frame}
 
+
+\begin{frame}[fragile]{Porting examples}
+\begin{itemize}
+    \item Porting of Nvidea sample codes
+    \item Error checking removed on slides
+    \item CuBlAS, FFT and hostcode examples
+    
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Porting examples}
+\begin{minted}[
+frame=lines,
+framesep=3mm,
+escapeinside=||
+]{c}
+|\hipblas|blasCreate(&handle);
+|\hipblas|blasSetVector(n2, sizeof(h_A[0]), h_A, 1, d_A, 1);
+|\hipblas|blasSetVector(n2, sizeof(h_A[0]), h_A, 1, d_A, 1);
+|\hipblas|blasSetVector(n2, sizeof(h_C[0]), h_C, 1, d_C, 1);
+|\hipblas|blasSgemm(handle, |\HIPBLAS|BLAS_OP_N, |\HIPBLAS|BLAS_OP_N, N, 
+                    N, N, &alpha, d_A,N, d_B, N, &beta, d_C, N);
+|\hipblas|blasGetVector(n2, sizeof(h_C[0]), d_C, 1, h_C, 1);
+|\hipblas|blasDestroy(handle);
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Porting examples}
+\begin{minted}[
+frame=lines,
+framesep=3mm,
+escapeinside=||
+]{c}
+|\hipblas|fftPlan1d(&plan, new_size, |\HIPBLAS|FFT_C2C, 1);
+|\hipblas|fftExecC2C(plan, |\hipblas|fftComplex *)d_signal,
+                 (|\hipblas|fftComplex *)d_signal, |\HIPBLAS|FFT_FORWARD);
+|\hipblas|fftExecC2C(plan, (|\hipblas|fftComplex *)d_filter_kernel,
+                 (|\hipblas|fftComplex *)d_filter_kernel, |\HIPBLAS|FFT_FORWARD);
+printf("Launching ComplexPointwiseMulAndScale<<< >>>\n");
+|\hipblas|LaunchKernelGGL(ComplexPointwiseMulAndScale, dim3(32), dim3(256),
+                      0, 0, d_signal, d_filter_kernel,
+                      new_size, 1.0f / new_size);
+
+|\hipblas|fftExecC2C(plan, (|\hipblas|fftComplex *)d_signal,
+               (|\hipblas|fftComplex *)d_signal, |\HIPBLAS|FFT_BACKWARD);
+\end{minted}
+\end{frame}
 \end{document}
