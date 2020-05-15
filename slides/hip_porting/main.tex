@@ -5,8 +5,8 @@
 \date{}
 \logo{%
     \includegraphics[width=1cm,height=1cm,keepaspectratio]{img/uvatag}~%
-    \includegraphics[width=2cm,height=2cm,keepaspectratio]{img/sara}~%
-}
+    \includegraphics[width=2cm,height=2cm,keepaspectratio]{img/sara}%
+}%
 
 
 \usepackage{gnuplottex}
@@ -19,7 +19,6 @@
 \newcommand{\hip}{\textbf{\color{red}{hip}}}
 \newcommand{\hipblas}{\sout{\color{red}{cu}}\textbf{\color{green}{hip}}}
 \newcommand{\HIPBLAS}{\sout{\color{red}{CU}}\textbf{\color{green}{HIP}}}
-\setbeamertemplate{navigation symbols}{}%remove navigation symbols
 \begin{document}
 \newcommand{\rom}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
 \begin{frame}
@@ -124,13 +123,6 @@ escapeinside=||
 \end{frame}
 
 \begin{frame}[fragile]{HIP code example: kernel launch}
-% \begin{minted}[
-% frame=lines,
-% framesep=3mm
-% ]{c}
-% vectorAddKernel<<<n/threadBlockSize, threadBlockSize>>>
-%                   (deviceA, deviceB, deviceC);
-% \end{minted}
 
 \begin{minted}[
 frame=lines,
@@ -230,6 +222,26 @@ NCCL &	RCCL &	Communications Primitives Library based on the MPI  \\
 \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]{HIP code example: Porting Defines}
+
+\begin{minted}[
+frame=lines,
+framesep=3mm,
+escapeinside=||
+]{c}
+#define cudaMalloc hipMalloc
+#define cudaMallocHost hipHostMalloc
+#define cudaMemcpy hipMemcpy
+#define cudaMemcpyAsync hipMemcpyAsync
+#define cudaMemset hipMemset
+#define cudaMemsetAsync hipMemsetAsync
+#define cudaPeekAtLastError hipPeekAtLastError
+#define cudaEventCreate hipEventCreate
+#define cudaEventCreateWithFlags hipEventCreateWithFlags
+\end{minted}
+\end{frame}
+
+
 \begin{frame}{Pitfalls}
 \begin{itemize}
     \item \texttt{hipcc} is a lot stricter compared to nvcc
@@ -246,9 +258,7 @@ NCCL &	RCCL &	Communications Primitives Library based on the MPI  \\
     \item Porting of Nvidea sample codes
     \item Error checking removed on slides
     \item CuBlAS, FFT and hostcode examples
-    
 \end{itemize}
-
 \end{frame}
 
 
@@ -288,4 +298,15 @@ printf("Launching ComplexPointwiseMulAndScale<<< >>>\n");
                (|\hipblas|fftComplex *)d_signal, |\HIPBLAS|FFT_BACKWARD);
 \end{minted}
 \end{frame}
+
+\begin{frame}[fragile]{Conclusion}
+\begin{itemize}
+    \item Tooling is still in active development
+    \item Tooling is getting better every day
+    \item Performance depends on the kernels
+\end{itemize}
+\end{frame}
+
+
 \end{document}
+
