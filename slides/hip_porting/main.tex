@@ -3,17 +3,23 @@
 \title{GPU Porting to AMD with HIP}
 \author{}
 \date{}
+\logo{%
+    \includegraphics[width=1cm,height=1cm,keepaspectratio]{img/uvatag}~%
+    \includegraphics[width=2cm,height=2cm,keepaspectratio]{img/sara}~%
+}
+
+
 \usepackage{gnuplottex}
 \usepackage{minted}
 \usepackage[normalem]{ulem}
-
+\usepackage{graphicx}
 \usepackage[binary-units]{siunitx}
 \usepackage{hyperref}
 \newcommand{\gbs}{\si[per-symbol = \text{~div~}]{\gibi\byte\per\second}}
 \newcommand{\hip}{\textbf{\color{red}{hip}}}
 \newcommand{\hipblas}{\sout{\color{red}{cu}}\textbf{\color{green}{hip}}}
 \newcommand{\HIPBLAS}{\sout{\color{red}{CU}}\textbf{\color{green}{HIP}}}
-
+\setbeamertemplate{navigation symbols}{}%remove navigation symbols
 \begin{document}
 \newcommand{\rom}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
 \begin{frame}
@@ -278,7 +284,6 @@ printf("Launching ComplexPointwiseMulAndScale<<< >>>\n");
 |\hipblas|LaunchKernelGGL(ComplexPointwiseMulAndScale, dim3(32), dim3(256),
                       0, 0, d_signal, d_filter_kernel,
                       new_size, 1.0f / new_size);
-
 |\hipblas|fftExecC2C(plan, (|\hipblas|fftComplex *)d_signal,
                (|\hipblas|fftComplex *)d_signal, |\HIPBLAS|FFT_BACKWARD);
 \end{minted}
