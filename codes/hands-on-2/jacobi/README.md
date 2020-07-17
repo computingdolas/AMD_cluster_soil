@@ -22,4 +22,4 @@ Jacobi-hip is a working hipified version of the jacobi program.
     Run `bin/jacobi_cuda_normal_mpi -h` for the full list of arguments.
 
 To run on specific GPU's use `HIP_VISIBLE_DEVICES=1,2`, e.g, `HIP_VISIBLE_DEVICES=0,1 mpiexec -np 2 bin/jacobi_cuda_normal_mpi -t 2 1 -fs` runs on the first 2 GPU's.
-For the Showkees machine GPU 0, 1, 2, 3 are on the same islands as well as GPU 4, 5, 6, 7.
+For the Kleurplaat machine GPU 0, 1, 2, 3 are on the same islands as well as GPU 4, 5, 6, 7.
