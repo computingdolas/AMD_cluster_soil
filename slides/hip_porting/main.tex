@@ -1,7 +1,8 @@
 \documentclass[aspectratio=169]{beamer}
 
-\title{GPU Porting to AMD with HIP}
-\author{}
+\title{AMD HIP porting tools and methods}
+\author{SURF Open Innovation Lab and University of Amsterdam
+				\\In partnership with NIKHEF}
 \date{}
 \logo{%
     \includegraphics[width=1cm,height=1cm,keepaspectratio]{img/uvatag}~%
@@ -46,23 +47,25 @@
     \end{itemize}
 \end{frame}
 
-
+\begin{frame}{What is HIP}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/HIP_flow.png}
+    % \caption{Caption}
+    % \label{fig:my_label}
+\end{figure}
+\end{frame}
 
 \section{Programming HIP}
 
-\begin{frame}{How to write HIP code}
-
-\begin{itemize}
-    \item Directly write HIP.
-    \item Port CUDA code to HIP.
-\end{itemize}
+\begin{frame}{HIP code example}
 
 \begin{table}[]
     \centering
     \begin{tabular}{l|l|l}
-Term & HIP & CUDA\\\hline
+Term & CUDA & HIP\\\hline
 Event & cudaEvent\_t & hipEvent\_t\\
-\textbf{Thread-index} & \textbf{threadIdx.x} & \textbf{hipThreadIdx\_x}\\
+Thread-index & threadIdx.x & hipThreadIdx\_x\\
 Device kernel & \_\_global\_\_ & \_\_global\_\_\\
 Group Memory &  \_\_shared\_\_ & \_\_shared\_\_\\
 Constant & \_\_constant\_\_ & \_\_constant\_\_\\
@@ -73,7 +76,6 @@ Constant & \_\_constant\_\_ & \_\_constant\_\_\\
 
 \end{frame}
 
-\subsection{Porting code}
 \begin{frame}[fragile]{HIP code example: vector add}
 % \begin{minted}[
 % frame=lines,
@@ -139,6 +141,7 @@ escapeinside=||
 \end{minted}
 \end{frame}
 
+\subsection{Porting code}
 \begin{frame}{Hipify}
 
 \begin{itemize}
@@ -174,7 +177,6 @@ NCCL &	RCCL &	Communications Primitives Library based on the MPI  \\
 \end{table}
 \end{frame}
 
-
 \begin{frame}{Hipify tools}
 \begin{itemize}
     \item \textbf{hipexamine}:
@@ -189,6 +191,7 @@ NCCL &	RCCL &	Communications Primitives Library based on the MPI  \\
 \end{itemize}
 \end{frame}
 
+
 \begin{frame}{Porthing methods}
 \begin{itemize}
     \item Hipify-perl 
@@ -200,8 +203,8 @@ NCCL &	RCCL &	Communications Primitives Library based on the MPI  \\
 \begin{frame}{Hipify-perl}
 \begin{itemize}
     \item Convert provided files to HIP
-    \item Inteligent search replace
-    \item Does not work all the time for more complex codes
+    \item Intelligent search replace
+    \item Might not work for more complex codes
 \end{itemize}
 
 \end{frame}
@@ -210,15 +213,15 @@ NCCL &	RCCL &	Communications Primitives Library based on the MPI  \\
 \begin{itemize}
     \item Clang based source parsing
     \item Can replace the compiler to convert a large complex problem
-    \item Works better om complex (c++) inputs
+    \item Works better on complex (c++) inputs
 \end{itemize}
 \end{frame}
 
-\begin{frame}{using Defines}
+\begin{frame}{Using Defines}
 \begin{itemize}
     \item Minimal changes needed, only ifdefs for the kernel launches 
     \item No need for a fork of the repo while porting continues.
-    \item Easier to intergrate in large projects
+    \item Easier to integrate in large projects
 \end{itemize}
 \end{frame}
 
@@ -241,21 +244,28 @@ escapeinside=||
 \end{minted}
 \end{frame}
 
+\begin{frame}[fragile]{HIP code example: Porting Defines}
 
-\begin{frame}{Pitfalls}
-\begin{itemize}
-    \item \texttt{hipcc} is a lot stricter compared to nvcc
-    \item All functions that are called from the device need to be markt as such
-    \item Low level optimizations for cuda cards need to be redone
-    \item Some specific c++ and up can give incorrect resulsts or are not supported
-    
-\end{itemize}
+\begin{minted}[
+frame=lines,
+framesep=3mm,
+escapeinside=||
+]{c}
+#if defined(__HIPCC__)
+|\color{red}{hipLaunchKernelGGL}|((vectorAddKernel),
+                    |\color{red}{dim3}|(n/threadBlockSize), |\color{red}{dim3}|(threadBlockSize),
+                    0 /*Shared*/, 0/*stream*/,
+                    deviceA, deviceB, deviceC);
+#else
+vectorAddKernel<<<n/threadBlockSize, threadBlockSize>>>
+                 (deviceA, deviceB, deviceC);
+#endif
+\end{minted}
 \end{frame}
-
 
 \begin{frame}[fragile]{Porting examples}
 \begin{itemize}
-    \item Porting of Nvidea sample codes
+    \item Porting of Nvidia sample codes
     \item Error checking removed on slides
     \item CuBlAS, FFT and hostcode examples
 \end{itemize}
@@ -280,6 +290,7 @@ escapeinside=||
 \end{frame}
 
 \begin{frame}[fragile]{Porting examples}
+
 \begin{minted}[
 frame=lines,
 framesep=3mm,
@@ -299,10 +310,58 @@ printf("Launching ComplexPointwiseMulAndScale<<< >>>\n");
 \end{minted}
 \end{frame}
 
+\begin{frame}[fragile]{Hipify-perl output}
+
+\begin{verbatim}
+    
+info: converted 3 CUDA->HIP refs ( ... )
+warn:1 LOC:274 in './simplefft.cpp'
+hipMemcpy 3
+hipFree 2
+HIPFFT_FORWARD 2
+hipMemcpyHostToDevice 2
+hipMalloc 2
+hipDeviceReset 1
+hipLaunchKernelGGL 1
+HIPFFT_C2C 1
+hipMemcpyDeviceToHost 1
+HIPFFT_BACKWARD 1
+hip_runtime 1
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]{Hipify-clang output}
+
+\begin{verbatim}
+[HIPIFY] info: file './simplefft.cpp.old' statistics:
+CONVERTED refs count: 30
+UNCONVERTED refs count: 0
+CONVERSION %: 100
+REPLACED bytes: 456
+TOTAL bytes: 9346
+CHANGED lines of code: 20
+TOTAL lines of code: 274
+CODE CHANGED (in bytes) %: 5
+CODE CHANGED (in lines) %: 7
+TIME ELAPSED s: 0.17
+[HIPIFY] info: CONVERTED refs by type:
+[HIPIFY] info: CONVERTED refs by API:
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{Pitfalls}
+\begin{itemize}
+    \item \texttt{hipcc} is a lot stricter compared to nvcc
+    \item All functions that are called from the device need to be marked as such
+    \item Low level optimizations for cuda cards need to be redone
+\end{itemize}
+\end{frame}
+
 \begin{frame}[fragile]{Conclusion}
 \begin{itemize}
-    \item Tooling is still in active development
-    \item Tooling is getting better every day
+    \item HIP enables the development of portable GPU codes
+    \item Most CUDA code can be ported to HIP
+    \item Tooling is still improving
     \item Performance depends on the kernels
 \end{itemize}
 \end{frame}
